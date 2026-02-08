@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RetailOne - 3-Tier Web Application Architecture</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: #f8fafc;
+        }
+        .subtitle {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+        }
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+        .diagram-container {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 1400px;
+            overflow-x: auto;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+        .credits {
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            color: #64748b;
+            text-align: center;
+        }
+        .issue-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+        .tag {
+            padding: 0.3rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .tag-kyal    { background: #1e3a5f; color: #60a5fa; }
+        .tag-kaden   { background: #1a3a2a; color: #4ade80; }
+        .tag-alicia  { background: #3b1f4a; color: #c084fc; }
+        .tag-dominic { background: #4a2a1a; color: #fb923c; }
+        .tag-rifdy   { background: #4a1a2a; color: #f87171; }
+    </style>
+</head>
+<body>
+    <h1>RetailOne - 3-Tier Cloud Architecture</h1>
+    <p class="subtitle">C320 Cloud Architecting & Administration | Team 2 Combined Solution (Issue 5 not done)</p>
+
+    <div class="issue-tags">
+        <span class="tag tag-kyal">Issue 1: Scaling - Kyal</span>
+        <span class="tag tag-kaden">Issue 2: Cost Optimization - Kaden</span>
+        <span class="tag tag-alicia">Issue 3: Network Latency - Alicia</span>
+        <span class="tag tag-dominic">Issue 4: Security & Compliance - Dominic</span>
+        <span class="tag tag-rifdy">Issue 6: Disaster Recovery - Rifdy</span>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item"><div class="legend-color" style="background:#3b82f6"></div> Web / Presentation Tier</div>
+        <div class="legend-item"><div class="legend-color" style="background:#8b5cf6"></div> Application / Logic Tier</div>
+        <div class="legend-item"><div class="legend-color" style="background:#10b981"></div> Data Tier</div>
+        <div class="legend-item"><div class="legend-color" style="background:#f59e0b"></div> Security & Compliance</div>
+        <div class="legend-item"><div class="legend-color" style="background:#ef4444"></div> Disaster Recovery</div>
+        <div class="legend-item"><div class="legend-color" style="background:#06b6d4"></div> Monitoring & Automation</div>
+    </div>
+
+    <div class="diagram-container">
+        <pre class="mermaid">
+graph TB
+    %% ===== USERS & CLIENTS =====
+    shoppers(("Online Shoppers<br/>(SEA, Europe, USA)"))
+    branches(("Regional Branches<br/>(MY, TH, ID)"))
+
+    %% ===== TIER 1: WEB / PRESENTATION TIER =====
+    subgraph TIER1["TIER 1: Web / Presentation Tier"]
+        direction TB
+        CDN["Global CDN<br/>(AWS CloudFront)<br/>─────────────<br/>Caches static content<br/>at edge locations"]
+        GLB["Global Load Balancer<br/>─────────────<br/>Routes to closest<br/>healthy region"]
+        S3Static["S3 Bucket<br/>(Static Assets)<br/>─────────────<br/>Images, JS, CSS,<br/>Product Media"]
+        VPN["VPN Gateways<br/>─────────────<br/>Encrypted tunnels<br/>for branch access"]
+        SDWAN["SD-WAN<br/>─────────────<br/>Smart routing &<br/>traffic prioritization"]
+    end
+
+    %% ===== TIER 2: APPLICATION / LOGIC TIER =====
+    subgraph TIER2["TIER 2: Application / Logic Tier"]
+        direction TB
+
+        subgraph SEA_REGION["SEA Region (Singapore / Malaysia)"]
+            ASG_SEA["Auto Scaling Group<br/>(EC2 Instances)<br/>─────────────<br/>POS APIs, Checkout,<br/>Search, Inventory"]
+            LAMBDA_SEA["AWS Lambda<br/>(Serverless)<br/>─────────────<br/>Event-driven tasks,<br/>POS processing"]
+        end
+
+        subgraph EU_REGION["Europe Region (Germany)"]
+            ASG_EU["Auto Scaling Group<br/>(EC2 Instances)<br/>─────────────<br/>Serves European<br/>online shoppers"]
+            LAMBDA_EU["AWS Lambda<br/>(Serverless)<br/>─────────────<br/>Event-driven tasks"]
+        end
+
+        SQS["Amazon SQS<br/>(Message Queue)<br/>─────────────<br/>Buffers traffic spikes,<br/>decouples processing"]
+        TGW["Transit Gateway<br/>─────────────<br/>Cloud private backbone<br/>inter-region connectivity"]
+    end
+
+    %% ===== TIER 3: DATA TIER =====
+    subgraph TIER3["TIER 3: Data Tier"]
+        direction TB
+        AURORA_PRIMARY["Amazon Aurora Global<br/>(Primary - Singapore)<br/>─────────────<br/>Auto-scaling, serverless<br/>capacity, connection pooling"]
+        AURORA_REPLICA["Aurora Read Replicas<br/>(Europe)<br/>─────────────<br/>Low-latency reads<br/>for EU shoppers"]
+        S3_DATA["Amazon S3<br/>(Data Storage)<br/>─────────────<br/>Backups, logs,<br/>sensitive data store"]
+    end
+
+    %% ===== SECURITY & COMPLIANCE =====
+    subgraph SECURITY["Security & Compliance Layer (Issue 4 - Dominic)"]
+        direction LR
+        KMS["AWS KMS<br/>Encryption at Rest<br/>+ Auto Key Rotation"]
+        ACM["AWS ACM<br/>SSL/TLS Certs<br/>+ Auto Renewal"]
+        MACIE["Amazon Macie<br/>PII/PCI Discovery<br/>in S3"]
+        CONFIG["AWS Config<br/>Compliance Rules<br/>+ Auto Remediation"]
+        SECHUB["AWS Security Hub<br/>Unified Alerts<br/>(CIS, PCI-DSS)"]
+        TRAIL["AWS CloudTrail<br/>API Audit Logs<br/>+ Forensics"]
+        IAM["IAM + MFA<br/>Least Privilege<br/>Role-based Access"]
+    end
+
+    %% ===== DISASTER RECOVERY =====
+    subgraph DR["Disaster Recovery (Issue 6 - Rifdy)"]
+        direction LR
+        DR_REGION["Cross-Region<br/>DR Standby<br/>─────────────<br/>Automated failover,<br/>no idle hardware"]
+        DR_BACKUP["Automated Backups<br/>─────────────<br/>Cross-region replication,<br/>regular DR testing"]
+    end
+
+    %% ===== MONITORING & AUTOMATION =====
+    subgraph MONITOR["Monitoring & Automation"]
+        direction LR
+        CW["Amazon CloudWatch<br/>Real-time Monitoring<br/>& Scaling Triggers"]
+        SSM["AWS Systems Manager<br/>Automated Patching<br/>& Updates"]
+        IAC["Terraform /<br/>CloudFormation<br/>(Infrastructure as Code)"]
+    end
+
+    %% ===== USER CONNECTIONS =====
+    shoppers -->|"HTTPS"| CDN
+    shoppers -->|"HTTPS"| GLB
+    branches -->|"Encrypted VPN"| VPN
+    branches -->|"Optimized Path"| SDWAN
+
+    %% ===== TIER 1 INTERNAL =====
+    CDN -->|"Serve static"| S3Static
+    CDN -->|"Cache miss / Dynamic"| GLB
+    VPN --> GLB
+    SDWAN --> GLB
+
+    %% ===== TIER 1 to TIER 2 =====
+    GLB -->|"Route to nearest<br/>healthy region"| ASG_SEA
+    GLB -->|"Route to nearest<br/>healthy region"| ASG_EU
+
+    %% ===== TIER 2 INTERNAL =====
+    ASG_SEA <-->|"Private backbone"| TGW
+    ASG_EU <-->|"Private backbone"| TGW
+    ASG_SEA -->|"Queue heavy tasks"| SQS
+    ASG_EU -->|"Queue heavy tasks"| SQS
+    SQS -->|"Trigger"| LAMBDA_SEA
+    SQS -->|"Trigger"| LAMBDA_EU
+
+    %% ===== TIER 2 to TIER 3 =====
+    ASG_SEA -->|"Read/Write"| AURORA_PRIMARY
+    LAMBDA_SEA -->|"Read/Write"| AURORA_PRIMARY
+    ASG_EU -->|"Read"| AURORA_REPLICA
+    LAMBDA_EU -->|"Read"| AURORA_REPLICA
+
+    %% ===== TIER 3 INTERNAL =====
+    AURORA_PRIMARY -.->|"Global replication"| AURORA_REPLICA
+    AURORA_PRIMARY -.->|"Backup"| S3_DATA
+
+    %% ===== DISASTER RECOVERY CONNECTIONS =====
+    AURORA_PRIMARY -.->|"Cross-region<br/>replication"| DR_REGION
+    S3_DATA -.->|"Cross-region<br/>copy"| DR_BACKUP
+    DR_REGION --- DR_BACKUP
+
+    %% ===== CROSS-CUTTING CONNECTIONS =====
+    SECURITY -.->|"Protects"| TIER1
+    SECURITY -.->|"Protects"| TIER2
+    SECURITY -.->|"Protects"| TIER3
+    MONITOR -.->|"Monitors &<br/>Auto-scales"| TIER1
+    MONITOR -.->|"Monitors &<br/>Auto-scales"| TIER2
+    MONITOR -.->|"Monitors &<br/>Auto-scales"| TIER3
+
+    %% ===== STYLING =====
+    classDef tier1Style fill:#1e3a5f,stroke:#3b82f6,stroke-width:2px,color:#e2e8f0
+    classDef tier2Style fill:#2d1b4e,stroke:#8b5cf6,stroke-width:2px,color:#e2e8f0
+    classDef tier3Style fill:#0f3527,stroke:#10b981,stroke-width:2px,color:#e2e8f0
+    classDef secStyle fill:#4a2800,stroke:#f59e0b,stroke-width:2px,color:#e2e8f0
+    classDef drStyle fill:#4a0f1a,stroke:#ef4444,stroke-width:2px,color:#e2e8f0
+    classDef monStyle fill:#073b4a,stroke:#06b6d4,stroke-width:2px,color:#e2e8f0
+    classDef userStyle fill:#334155,stroke:#94a3b8,stroke-width:2px,color:#f8fafc
+
+    class CDN,GLB,S3Static,VPN,SDWAN tier1Style
+    class ASG_SEA,LAMBDA_SEA,ASG_EU,LAMBDA_EU,SQS,TGW tier2Style
+    class AURORA_PRIMARY,AURORA_REPLICA,S3_DATA tier3Style
+    class KMS,ACM,MACIE,CONFIG,SECHUB,TRAIL,IAM secStyle
+    class DR_REGION,DR_BACKUP drStyle
+    class CW,SSM,IAC monStyle
+    class shoppers,branches userStyle
+
+    style TIER1 fill:#0f2744,stroke:#3b82f6,stroke-width:3px,color:#93c5fd
+    style TIER2 fill:#1a0f33,stroke:#8b5cf6,stroke-width:3px,color:#c4b5fd
+    style TIER3 fill:#0a2618,stroke:#10b981,stroke-width:3px,color:#6ee7b7
+    style SEA_REGION fill:#1e1145,stroke:#7c3aed,stroke-width:1px,color:#c4b5fd
+    style EU_REGION fill:#1e1145,stroke:#7c3aed,stroke-width:1px,color:#c4b5fd
+    style SECURITY fill:#332000,stroke:#f59e0b,stroke-width:3px,color:#fcd34d
+    style DR fill:#330a15,stroke:#ef4444,stroke-width:3px,color:#fca5a5
+    style MONITOR fill:#052e3a,stroke:#06b6d4,stroke-width:3px,color:#67e8f9
+        </pre>
+    </div>
+
+    <div class="credits">
+        C320 Cloud Architecting &amp; Administration | Team 2 | Kyal &bull; Kaden &bull; Alicia &bull; Dominic &bull; Rifdy<br/>
+        Issues 1-4 &amp; 6 Combined | Issue 5 (Kiefer) excluded
+    </div>
+
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                darkMode: true,
+                background: '#1e293b',
+                primaryColor: '#3b82f6',
+                primaryTextColor: '#e2e8f0',
+                primaryBorderColor: '#60a5fa',
+                lineColor: '#64748b',
+                secondaryColor: '#8b5cf6',
+                tertiaryColor: '#10b981',
+                fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
+                fontSize: '14px'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis',
+                rankSpacing: 60,
+                nodeSpacing: 30,
+                padding: 15
+            },
+            securityLevel: 'loose'
+        });
+    </script>
+</body>
+</html>
